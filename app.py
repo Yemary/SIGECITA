@@ -227,5 +227,46 @@ def mis_citas():
 
     return render_template('mis_citas.html', citas=citas, exito=('Cita cancelada ✅' if request.method=='POST' else None))
 
+@app.route('/mi_agenda')
+def mi_agenda():
+    if 'usuario_id' not in session:
+        return redirect('/login')
+
+    # Solo los doctores pueden ver su agenda
+    if session.get('rol') != 'doctor':
+        return redirect('/panel')
+
+    doctor_id = session.get('usuario_id')
+    nombre_doctor = session.get('nombre_completo')
+
+    conexion = get_connection()
+    cursor = conexion.cursor()
+
+    # Obtener SOLO las citas de ESTE doctor
+    cursor.execute("""
+        SELECT c.id, p.nombre_completo, 
+               CONVERT(VARCHAR(10), c.fecha, 103), 
+               CONVERT(VARCHAR(5), c.hora), c.estado
+        FROM Citas c
+        JOIN Pacientes p ON c.paciente_id = p.id
+        WHERE c.doctor_id = ?
+        ORDER BY c.fecha, c.hora
+    """, doctor_id)
+
+    filas = cursor.fetchall()
+    conexion.close()
+
+    citas = []
+    for f in filas:
+        citas.append({
+            'paciente': f[1],
+            'fecha': f[2],
+            'hora': f[3],
+            'estado': f[4],
+            'estado_clase': 'pendiente' if f[4]=='Pendiente' else 'cancelada'
+        })
+
+    return render_template('mi_agenda.html', citas=citas, nombre_doctor=nombre_doctor)
+
 if __name__ == '__main__':
     app.run(debug=True)

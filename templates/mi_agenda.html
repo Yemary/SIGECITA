@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SIGECITA - Mi Agenda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #00796b; color: white; }
+        .pendiente { color: #f57c00; font-weight: bold; }
+        .cancelada { color: #c62828; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="login-container" style="max-width: 550px;">
+        <h1>SIGECITA</h1>
+        <h2>📅 Mi Agenda de Citas</h2>
+        <p style="color: #00796b; font-weight: bold;">Dr. {{ nombre_doctor }}</p>
+
+        {% if citas %}
+        <table>
+            <tr>
+                <th>Paciente</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Estado</th>
+            </tr>
+            {% for cita in citas %}
+            <tr>
+                <td>{{ cita.paciente }}</td>
+                <td>{{ cita.fecha }}</td>
+                <td>{{ cita.hora }}</td>
+                <td class="{{ cita.estado_clase }}">{{ cita.estado }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p style="text-align:center; color:#666; margin-top:20px;">No tienes citas programadas.</p>
+        {% endif %}
+
+        <p style="margin-top:15px;"><a href="/panel">Volver al panel</a></p>
+    </div>
+</body>
+</html>
