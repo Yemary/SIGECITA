@@ -187,5 +187,45 @@ def agendar_cita():
 
     return render_template('agendar_cita.html')
 
+@app.route('/mis_citas', methods=['GET', 'POST'])
+def mis_citas():
+    if 'usuario_id' not in session:
+        return redirect('/login')
+
+    conexion = get_connection()
+    cursor = conexion.cursor()
+
+    if request.method == 'POST':
+        cita_id = request.form.get('cita_id')
+        cursor.execute("UPDATE Citas SET estado = 'Cancelada' WHERE id = ?", cita_id)
+        conexion.commit()
+
+    # Obtener todas las citas con nombres
+    cursor.execute("""
+        SELECT c.id, p.nombre_completo, u.nombre_completo, 
+               CONVERT(VARCHAR(10), c.fecha, 103), 
+               CONVERT(VARCHAR(5), c.hora), c.estado
+        FROM Citas c
+        JOIN Pacientes p ON c.paciente_id = p.id
+        JOIN Usuarios u ON c.doctor_id = u.id
+        ORDER BY c.fecha, c.hora
+    """)
+    filas = cursor.fetchall()
+    conexion.close()
+
+    citas = []
+    for f in filas:
+        citas.append({
+            'id': f[0],
+            'paciente': f[1],
+            'doctor': f[2],
+            'fecha': f[3],
+            'hora': f[4],
+            'estado': f[5],
+            'estado_clase': 'pendiente' if f[5]=='Pendiente' else 'cancelada'
+        })
+
+    return render_template('mis_citas.html', citas=citas, exito=('Cita cancelada ✅' if request.method=='POST' else None))
+
 if __name__ == '__main__':
     app.run(debug=True)
