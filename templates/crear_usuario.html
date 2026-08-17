@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SIGECITA - Crear Usuario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <h1>SIGECITA</h1>
+        <h2>Crear Nuevo Usuario</h2>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if exito %}
+            <p class="exito">{{ exito }}</p>
+        {% endif %}
+
+        <form method="POST" action="/crear_usuario">
+            <label for="nombre_completo">Nombre completo:</label>
+            <input type="text" id="nombre_completo" name="nombre_completo" required>
+
+            <label for="usuario">Usuario:</label>
+            <input type="text" id="usuario" name="usuario" required>
+
+            <label for="contrasena">Contraseña:</label>
+            <input type="password" id="contrasena" name="contrasena" required>
+
+            <label for="rol">Rol:</label>
+            <select id="rol" name="rol" required>
+                <option value="admin">Administrador</option>
+                <option value="recepcionista">Recepcionista</option>
+                <option value="doctor">Doctor</option>
+            </select>
+
+            <button type="submit">Crear Usuario</button>
+        </form>
+        <p><a href="/panel">Volver al panel</a></p>
+    </div>
+</body>
+</html>

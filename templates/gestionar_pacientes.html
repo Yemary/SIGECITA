@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SIGECITA - Gestión de Pacientes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="login-container" style="max-width: 500px;">
+        <h1>SIGECITA</h1>
+        <h2>Gestión de Pacientes</h2>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if exito %}
+            <p class="exito">{{ exito }}</p>
+        {% endif %}
+
+        <h3 style="margin: 15px 0 8px;">Buscar paciente por ID</h3>
+        <form method="POST" action="/gestionar_pacientes">
+            <input type="number" name="buscar_id" placeholder="Ej. 1, 2, 3..." required style="width: 100%; padding: 10px; margin-bottom: 10px;">
+            <button type="submit" name="accion" value="buscar">Buscar</button>
+        </form>
+
+        {% if paciente %}
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ccc;">
+        <h3>Editar Datos del Paciente</h3>
+        <form method="POST" action="/gestionar_pacientes">
+            <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
+            
+            <label>Nombre completo:</label>
+            <input type="text" name="nombre_completo" value="{{ paciente.nombre_completo }}" required>
+
+            <label>Teléfono:</label>
+            <input type="text" name="telefono" value="{{ paciente.telefono }}" required>
+
+            <label>Fecha de nacimiento:</label>
+            <input type="date" name="fecha_nacimiento" value="{{ paciente.fecha_nacimiento }}" required>
+
+            <label>Dirección:</label>
+            <input type="text" name="direccion" value="{{ paciente.direccion }}">
+
+            <button type="submit" name="accion" value="guardar">Guardar Cambios</button>
+        </form>
+        {% endif %}
+
+        <p style="margin-top: 15px;"><a href="/panel">Volver al panel</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SIGECITA - Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <h1>SIGECITA</h1>
+        <h2>Bienvenido, {{ nombre }}</h2>
+        <p style="color:#607d8b; margin-bottom: 10px;">Rol: {{ rol }}</p>
+
+        <div class="menu">
+            {% if rol == 'admin' %}
+                <a href="/crear_usuario">Crear Usuario</a>
+            {% endif %}
+
+            {% if rol == 'recepcionista' or rol == 'admin' %}
+                <a href="/registrar_paciente">Registrar Paciente</a>
+                <a href="/gestionar_pacientes">Editar Paciente</a>
+                <a href="/citas">Gestión de Citas</a>
+            {% endif %}
+
+            {% if rol == 'doctor' %}
+                <a href="/mi_agenda">Mi Agenda</a>
+            {% endif %}
+
+            <a href="/logout">Cerrar sesión</a>
+        </div>
+    </div>
+</body>
+</html>
