@@ -147,6 +147,45 @@ def gestionar_pacientes():
     conexion.close()
     return render_template('gestionar_pacientes.html', paciente=paciente)
 
+@app.route('/agendar_cita', methods=['GET', 'POST'])
+def agendar_cita():
+    if 'usuario_id' not in session:
+        return redirect('/login')
+
+    if request.method == 'POST':
+        pac_id = request.form['paciente_id']
+        doc_id = request.form['doctor_id']
+        fecha = request.form['fecha']
+        hora = request.form['hora']
+
+        conexion = get_connection()
+        cursor = conexion.cursor()
+
+        # Validar horario ocupado
+        cursor.execute("""
+            SELECT * FROM Citas 
+            WHERE doctor_id = ? AND fecha = ? AND hora = ? AND estado != 'Cancelada'
+        """, (doc_id, fecha, hora))
+        
+        if cursor.fetchone():
+            conexion.close()
+            return render_template('agendar_cita.html', 
+                                   error="⚠️ Ese doctor ya tiene cita en ese horario.")
+
+        # Guardar cita
+        try:
+            cursor.execute("""
+                INSERT INTO Citas (paciente_id, doctor_id, fecha, hora, estado)
+                VALUES (?, ?, ?, ?, 'Pendiente')
+            """, (pac_id, doc_id, fecha, hora))
+            conexion.commit()
+            conexion.close()
+            return render_template('agendar_cita.html', exito="✅ Cita agendada correctamente")
+        except Exception as e:
+            conexion.close()
+            return render_template('agendar_cita.html', error=f"Error: {str(e)}")
+
+    return render_template('agendar_cita.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

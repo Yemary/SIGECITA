@@ -1,0 +1,3 @@
+UPDATE Usuarios
+SET contrasena = 'scrypt:32768:8:1$lfZvipeGnhYsLdC5$563e3e96d6554b21c4b87675156c8ae13186a87cd4b0decbfd98ebc9aa28028960b7ea60ab38106456b3571ed273037c68eb8e7771a9e539733bdc19cfa658b1'
+WHERE nombre_usuario = 'admin';

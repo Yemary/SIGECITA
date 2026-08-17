@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SIGECITA - Agendar Cita</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="login-container" style="max-width: 420px;">
+        <h1>SIGECITA</h1>
+        <h2>Agendar Nueva Cita</h2>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        {% if exito %}
+            <p class="exito">{{ exito }}</p>
+        {% endif %}
+
+        <form method="POST" action="/agendar_cita">
+            <label>Paciente (ID):</label>
+            <input type="number" name="paciente_id" required placeholder="Ej: 1">
+
+            <label>Doctor (ID):</label>
+            <input type="number" name="doctor_id" required placeholder="Ej: 3">
+
+            <label>Fecha:</label>
+            <input type="date" name="fecha" required>
+
+            <label>Hora:</label>
+            <input type="time" name="hora" required>
+
+            <button type="submit">Agendar Cita</button>
+        </form>
+        <p><a href="/panel">Volver al panel</a></p>
+    </div>
+</body>
+</html>
