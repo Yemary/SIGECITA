@@ -1,0 +1,4 @@
+flask
+pyodbc
+pytest
+selenium
